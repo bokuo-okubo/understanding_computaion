@@ -1,6 +1,6 @@
 require '../../base_definitions.rb'
 
-def to_lambda_str(_inspect)
+def to_lambda_str(_inspect = "e")
   "-> e { #{_inspect} }"
 end
 
@@ -65,5 +65,11 @@ end
 class Assign # args = {:name, :expression}
   def to_ruby
     to_lambda_str "e.merge({ #{name.inspect} => (#{expression.to_ruby}).call(e) })"
+  end
+end
+
+class DoNothing
+  def to_ruby
+    to_lambda_str
   end
 end
