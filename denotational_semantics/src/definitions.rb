@@ -91,3 +91,9 @@ class If # args = {:condition, :consequence, :alternative}
     )
   end
 end
+
+class Sequence
+  def to_ruby
+    to_lambda_str "(#{second.to_ruby}).call((#{first.to_ruby}).call(e))"
+  end
+end
