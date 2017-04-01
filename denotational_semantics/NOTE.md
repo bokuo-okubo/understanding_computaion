@@ -22,3 +22,16 @@ proc = eval(Boolean.new(false).to_ruby)
 proc.call({})
 # => false
 ```
+
+
+## p49 Check Variable
+```ruby
+expression = Variable.new(:x)
+# => «x»
+expression.to_ruby
+# => "-> e { e[:x] }"
+proc = eval(expression.to_ruby)
+# => #<Proc (lambda)>
+proc.call({ x: 7 })
+# => 7
+```
