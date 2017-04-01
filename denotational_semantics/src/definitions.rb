@@ -1,7 +1,13 @@
 require '../../base_definitions.rb'
 
 def to_lambda_str(_inspect = "e")
-  "-> e { #{_inspect} }"
+  build =-> str { "-> e { #{str} }" }
+  case _inspect
+  when String
+    build[_inspect]
+  when Array
+    build[_inspect.join("\s")]
+  end
 end
 
 class Number # args => {:value}
@@ -71,5 +77,17 @@ end
 class DoNothing
   def to_ruby
     to_lambda_str
+  end
+end
+
+class If # args = {:condition, :consequence, :alternative}
+  def to_ruby
+    to_lambda_str %W(
+      if (#{condition.to_ruby}).call(e) then
+        (#{consequence.to_ruby}).call(e)
+      else
+        (#{alternative.to_ruby}).call(e)
+      end
+    )
   end
 end
