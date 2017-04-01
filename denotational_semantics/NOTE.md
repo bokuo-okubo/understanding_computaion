@@ -44,3 +44,21 @@ Add.new(Variable.new(:x), Number.new(1)).to_ruby
 LessThan.new(Add.new(Variable.new(:x), Number.new(1)), Number.new(3)).to_ruby
 # => "-> e { (-> e { (-> e { e[:x] }).call(e) + (-> e { 1 }).call(e) }).call(e) < ↵ (-> e { 3 }).call(e) }"
 ```
+
+
+## p.50 人間の限界
+最終的に得られる表示は複雑なので、それが正しいかどうかを目で見て判断するのは困難。
+次のようにして確かめよう。
+
+```Ruby
+environment = { x: 3 }
+# => {:x=>3}
+proc = eval(Add.new(Variable.new(:x), Number.new(1)).to_ruby)
+# => #<Proc (lambda)>
+proc.call(environment)
+# => 4
+proc = eval(LessThan.new(Add.new(Variable.new(:x), Number.new(1)), Number.new(3)).to_ruby )
+# => #<Proc (lambda)>
+proc.call(environment)
+# => false
+```
