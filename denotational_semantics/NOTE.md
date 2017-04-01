@@ -74,3 +74,19 @@ proc = eval(statement.to_ruby)
 proc.call({ x: 3 })
 => {:x=>3, :y=>4}
 ```
+
+## p.52 While
+
+```ruby
+statement = While.new(
+  LessThan.new(Variable.new(:x), Number.new(5)),
+  Assign.new(:x, Multiply.new(Variable.new(:x), Number.new(3)))
+)
+# => «while (x < 5) { x = x * 3 }»
+statement.to_ruby
+# => "-> e { while (-> e { (-> e { e[:x] }).call(e) < (-> e { 5 }).call(e) }).call(e); e = (-> e { e.merge({ :x => (-> e { (-> e { e[:x] }).call(e) * (-> e { 3 }).call(e) ↵ }).call(e) }) }).call(e); end; e }"
+proc = eval(statement.to_ruby)
+# => #<Proc (lambda)>
+proc.call({ x: 1 })
+# => {:x=>9}
+```

@@ -97,3 +97,14 @@ class Sequence
     to_lambda_str "(#{second.to_ruby}).call((#{first.to_ruby}).call(e))"
   end
 end
+
+class While
+  def to_ruby
+    to_lambda_str %W(
+      while (#{condition.to_ruby}).call(e);
+        e = (#{body.to_ruby}).call(e);
+      end;
+      e
+    )
+  end
+end
