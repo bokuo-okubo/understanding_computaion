@@ -62,3 +62,15 @@ proc = eval(LessThan.new(Add.new(Variable.new(:x), Number.new(1)), Number.new(3)
 proc.call(environment)
 # => false
 ```
+
+## p.51 Assign
+```Ruby
+statement = Assign.new(:y, Add.new(Variable.new(:x), Number.new(1)))
+# => «y = x + 1»
+statement.to_ruby
+# => "-> e { e.merge({ :y => (-> e { (-> e { e[:x] }).call(e) + (-> e { 1 }).call(e) })↵ .call(e) }) }"
+proc = eval(statement.to_ruby)
+=> #<Proc (lambda)>
+proc.call({ x: 3 })
+=> {:x=>3, :y=>4}
+```

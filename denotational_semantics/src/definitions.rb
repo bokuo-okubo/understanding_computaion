@@ -59,3 +59,11 @@ class LessThan # args = {:left, :right}
     to_lambda_str "(#{left.to_ruby}).call(e) < (#{right.to_ruby}).call(e)"
   end
 end
+
+# Statements
+
+class Assign # args = {:name, :expression}
+  def to_ruby
+    to_lambda_str "e.merge({ #{name.inspect} => (#{expression.to_ruby}).call(e) })"
+  end
+end
