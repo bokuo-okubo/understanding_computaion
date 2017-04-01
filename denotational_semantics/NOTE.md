@@ -35,3 +35,12 @@ proc = eval(expression.to_ruby)
 proc.call({ x: 7 })
 # => 7
 ```
+
+## p.50 Add, LessThan のチェック
+
+```ruby
+Add.new(Variable.new(:x), Number.new(1)).to_ruby
+# => "-> e { (-> e { e[:x] }).call(e) + (-> e { 1 }).call(e) }"
+LessThan.new(Add.new(Variable.new(:x), Number.new(1)), Number.new(3)).to_ruby
+# => "-> e { (-> e { (-> e { e[:x] }).call(e) + (-> e { 1 }).call(e) }).call(e) < ↵ (-> e { 3 }).call(e) }"
+```
