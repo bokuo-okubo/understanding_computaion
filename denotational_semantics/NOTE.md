@@ -8,3 +8,17 @@ Number.new(5).to_ruby
 Boolean.new(false).to_ruby
 # => "-> e { false }"
 ```
+
+
+## p.49 ドキドキ初めての Kernel#eval
+
+```ruby
+proc = eval(Number.new(5).to_ruby)
+# => #<Proc (lambda)>
+proc.call({})
+# => 5
+proc = eval(Boolean.new(false).to_ruby)
+# => #<Proc (lambda)>
+proc.call({})
+# => false
+```
