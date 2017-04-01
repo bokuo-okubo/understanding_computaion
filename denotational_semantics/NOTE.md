@@ -90,3 +90,97 @@ proc = eval(statement.to_ruby)
 proc.call({ x: 1 })
 # => {:x=>9}
 ```
+
+
+## [Column] Whileの比較
+
+
+> The small-step operational semantics of «while» is written as a reduction rule for an abstract machine.
+>
+> The overall looping behavior isn’t part of the rule’s action reduction just turns a «while» statement into an «if» statement
+> but it emerges as a consequence of the future reductions performed by the machine.
+>
+> To understand what «while» does, we need to look at all of the small-step rules
+> and work out how they interact over the course of a SIMPLE program’s execution.
+
+**Small Step 意味論**
+```ruby
+class While
+
+  def reducible?
+    true
+  end
+
+  def reduce(environment)
+    [
+      If.new(condition,
+        Sequence.new(body, self),
+        DoNothing.new
+      ),
+      environment
+    ]
+  end
+end
+
+```
+
+---
+
+> «while»’s big-step operational semantics is written as an evaluation rule that shows how to compute the final environment directly.
+> The rule contains a recursive call to itself, so there’s an explicit indication that «while» will cause a loop during evaluation,
+> but it’s not quite the kind of loop that a SIMPLE programmer would recognize.
+>
+> Big-step rules are written in a recursive style, describing the complete evaluation
+> of an expression or statement in terms of the evaluation of other pieces of syntax,
+> so this rule tells us that the result of evaluating a «while» statement may depend upon
+> the result of evaluating the same statement in a different environment,
+> but it requires a leap of intuition to connect this idea with the iterative behavior that
+> «while» is supposed to exhibit.
+>
+> Fortunately the leap isn’t too large: a bit of mathematical reasoning can show that
+> the two kinds of loop are equivalent in principle, and when the metalanguage supports
+> tail call optimization, they’re also equivalent in practice.
+
+**Big Step 意味論**
+```ruby
+class While # args = {:condition, :body}
+  def evaluate(environment)
+    case condition.evaluate(environment)
+    when Boolean.new(true)
+      evaluate(body.evaluate(environment))
+    when Boolean.new(false)
+      environment
+    end
+  end
+end
+```
+
+---
+
+> The denotational semantics of «while» shows how to rewrite it in Ruby,
+> namely by using Ruby’s while keyword.
+>
+> This is a much more direct translation: Ruby has native support for iterative loops,
+> and the denotation rule shows that «while» can be implemented with that feature.
+>
+> There’s no leap required to understand how the two kinds of loop relate to each other,
+> so if we understand how Ruby while loops work, we understand SIMPLE «while» loops too.
+>
+> Of course, this means we’ve just converted the problem of understanding SIMPLE into
+> the problem of understanding the denotation language, which is a serious disadvantage when
+> that language is as large and ill-specified as Ruby, but it becomes an advantage when
+> we have a small mathematical language for writing denotations.
+
+** 表示的 意味論**
+```ruby
+class While
+  def to_ruby
+    to_lambda_str %W(
+      while (#{condition.to_ruby}).call(e);
+        e = (#{body.to_ruby}).call(e);
+      end;
+      e
+    )
+  end
+end
+```
